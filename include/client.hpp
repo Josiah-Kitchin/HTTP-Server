@@ -7,6 +7,11 @@
 #include <netinet/in.h>
 #include <arpa/inet.h> 
 
+/* 
+   Client object to be used by the server object 
+   Accepts a connection from a given server socket file descripter
+*/
+
 class Client { 
 public: 
     Client(int); 

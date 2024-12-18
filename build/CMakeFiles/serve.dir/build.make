@@ -97,10 +97,38 @@ CMakeFiles/serve.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/serve.dir/src/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/josiah/Projects/server/src/main.cpp -o CMakeFiles/serve.dir/src/main.cpp.s
 
+CMakeFiles/serve.dir/src/request.cpp.o: CMakeFiles/serve.dir/flags.make
+CMakeFiles/serve.dir/src/request.cpp.o: /home/josiah/Projects/server/src/request.cpp
+CMakeFiles/serve.dir/src/request.cpp.o: CMakeFiles/serve.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/josiah/Projects/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/serve.dir/src/request.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/serve.dir/src/request.cpp.o -MF CMakeFiles/serve.dir/src/request.cpp.o.d -o CMakeFiles/serve.dir/src/request.cpp.o -c /home/josiah/Projects/server/src/request.cpp
+
+CMakeFiles/serve.dir/src/request.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/serve.dir/src/request.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/josiah/Projects/server/src/request.cpp > CMakeFiles/serve.dir/src/request.cpp.i
+
+CMakeFiles/serve.dir/src/request.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/serve.dir/src/request.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/josiah/Projects/server/src/request.cpp -o CMakeFiles/serve.dir/src/request.cpp.s
+
+CMakeFiles/serve.dir/src/request_builder.cpp.o: CMakeFiles/serve.dir/flags.make
+CMakeFiles/serve.dir/src/request_builder.cpp.o: /home/josiah/Projects/server/src/request_builder.cpp
+CMakeFiles/serve.dir/src/request_builder.cpp.o: CMakeFiles/serve.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/josiah/Projects/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/serve.dir/src/request_builder.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/serve.dir/src/request_builder.cpp.o -MF CMakeFiles/serve.dir/src/request_builder.cpp.o.d -o CMakeFiles/serve.dir/src/request_builder.cpp.o -c /home/josiah/Projects/server/src/request_builder.cpp
+
+CMakeFiles/serve.dir/src/request_builder.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/serve.dir/src/request_builder.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/josiah/Projects/server/src/request_builder.cpp > CMakeFiles/serve.dir/src/request_builder.cpp.i
+
+CMakeFiles/serve.dir/src/request_builder.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/serve.dir/src/request_builder.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/josiah/Projects/server/src/request_builder.cpp -o CMakeFiles/serve.dir/src/request_builder.cpp.s
+
 CMakeFiles/serve.dir/src/server.cpp.o: CMakeFiles/serve.dir/flags.make
 CMakeFiles/serve.dir/src/server.cpp.o: /home/josiah/Projects/server/src/server.cpp
 CMakeFiles/serve.dir/src/server.cpp.o: CMakeFiles/serve.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/josiah/Projects/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/serve.dir/src/server.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/josiah/Projects/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/serve.dir/src/server.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/serve.dir/src/server.cpp.o -MF CMakeFiles/serve.dir/src/server.cpp.o.d -o CMakeFiles/serve.dir/src/server.cpp.o -c /home/josiah/Projects/server/src/server.cpp
 
 CMakeFiles/serve.dir/src/server.cpp.i: cmake_force
@@ -115,6 +143,8 @@ CMakeFiles/serve.dir/src/server.cpp.s: cmake_force
 serve_OBJECTS = \
 "CMakeFiles/serve.dir/src/client.cpp.o" \
 "CMakeFiles/serve.dir/src/main.cpp.o" \
+"CMakeFiles/serve.dir/src/request.cpp.o" \
+"CMakeFiles/serve.dir/src/request_builder.cpp.o" \
 "CMakeFiles/serve.dir/src/server.cpp.o"
 
 # External object files for target serve
@@ -122,10 +152,12 @@ serve_EXTERNAL_OBJECTS =
 
 serve: CMakeFiles/serve.dir/src/client.cpp.o
 serve: CMakeFiles/serve.dir/src/main.cpp.o
+serve: CMakeFiles/serve.dir/src/request.cpp.o
+serve: CMakeFiles/serve.dir/src/request_builder.cpp.o
 serve: CMakeFiles/serve.dir/src/server.cpp.o
 serve: CMakeFiles/serve.dir/build.make
 serve: CMakeFiles/serve.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/josiah/Projects/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable serve"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/josiah/Projects/server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable serve"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/serve.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

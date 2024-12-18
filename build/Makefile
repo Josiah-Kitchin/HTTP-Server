@@ -177,6 +177,54 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/request.o: src/request.cpp.o
+.PHONY : src/request.o
+
+# target to build an object file
+src/request.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/request.cpp.o
+.PHONY : src/request.cpp.o
+
+src/request.i: src/request.cpp.i
+.PHONY : src/request.i
+
+# target to preprocess a source file
+src/request.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/request.cpp.i
+.PHONY : src/request.cpp.i
+
+src/request.s: src/request.cpp.s
+.PHONY : src/request.s
+
+# target to generate assembly for a file
+src/request.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/request.cpp.s
+.PHONY : src/request.cpp.s
+
+src/request_builder.o: src/request_builder.cpp.o
+.PHONY : src/request_builder.o
+
+# target to build an object file
+src/request_builder.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/request_builder.cpp.o
+.PHONY : src/request_builder.cpp.o
+
+src/request_builder.i: src/request_builder.cpp.i
+.PHONY : src/request_builder.i
+
+# target to preprocess a source file
+src/request_builder.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/request_builder.cpp.i
+.PHONY : src/request_builder.cpp.i
+
+src/request_builder.s: src/request_builder.cpp.s
+.PHONY : src/request_builder.s
+
+# target to generate assembly for a file
+src/request_builder.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/request_builder.cpp.s
+.PHONY : src/request_builder.cpp.s
+
 src/server.o: src/server.cpp.o
 .PHONY : src/server.o
 
@@ -216,6 +264,12 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/request.o"
+	@echo "... src/request.i"
+	@echo "... src/request.s"
+	@echo "... src/request_builder.o"
+	@echo "... src/request_builder.i"
+	@echo "... src/request_builder.s"
 	@echo "... src/server.o"
 	@echo "... src/server.i"
 	@echo "... src/server.s"

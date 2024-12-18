@@ -177,5 +177,15 @@ CMakeFiles/serve.dir/src/server.cpp.o: \
  /usr/include/netinet/in.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
+ /home/josiah/Projects/server/include/request.hpp \
+ /home/josiah/Projects/server/include/response.hpp \
+ /usr/include/c++/13/map /usr/include/c++/13/bits/stl_tree.h \
+ /usr/include/c++/13/ext/aligned_buffer.h \
+ /usr/include/c++/13/bits/node_handle.h \
+ /usr/include/c++/13/bits/stl_map.h \
+ /usr/include/c++/13/bits/stl_multimap.h \
+ /usr/include/c++/13/bits/erase_if.h /usr/include/c++/13/array \
+ /usr/include/c++/13/compare \
  /home/josiah/Projects/server/include/config.hpp \
- /home/josiah/Projects/server/include/client.hpp
+ /home/josiah/Projects/server/include/client.hpp \
+ /home/josiah/Projects/server/include/request_builder.hpp

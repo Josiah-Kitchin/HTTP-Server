@@ -5,17 +5,6 @@
 #include "request.hpp"
 
 
-namespace request_builder { 
-    
-    Request build_request(char* request_buffer);
-
-}
-
-
-
-
-
-
-
+Request build_request(char* request_buffer);
 
 #endif

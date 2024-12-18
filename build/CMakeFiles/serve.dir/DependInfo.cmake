@@ -10,6 +10,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/josiah/Projects/server/src/client.cpp" "CMakeFiles/serve.dir/src/client.cpp.o" "gcc" "CMakeFiles/serve.dir/src/client.cpp.o.d"
   "/home/josiah/Projects/server/src/main.cpp" "CMakeFiles/serve.dir/src/main.cpp.o" "gcc" "CMakeFiles/serve.dir/src/main.cpp.o.d"
+  "/home/josiah/Projects/server/src/request.cpp" "CMakeFiles/serve.dir/src/request.cpp.o" "gcc" "CMakeFiles/serve.dir/src/request.cpp.o.d"
+  "/home/josiah/Projects/server/src/request_builder.cpp" "CMakeFiles/serve.dir/src/request_builder.cpp.o" "gcc" "CMakeFiles/serve.dir/src/request_builder.cpp.o.d"
   "/home/josiah/Projects/server/src/server.cpp" "CMakeFiles/serve.dir/src/server.cpp.o" "gcc" "CMakeFiles/serve.dir/src/server.cpp.o.d"
   )
 

@@ -4,10 +4,14 @@
 #include "server.hpp"
 #include "config.hpp"
 #include "client.hpp"
+#include "request_builder.hpp"
 
 
 
 Server::Server(int port) {
+    /* Initalize the server by creating a socket, binding the server to the address and port then 
+       listening to the socket */
+
     socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_fd == -1) { 
         throw std::runtime_error("Server failed to create a socket");
@@ -29,23 +33,27 @@ Server::~Server() {
     close(socket_fd);
 } 
 
-void handle_request(int client_socket) { 
-    const std::string http_response =  
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/html\r\n"
-        "\r\n"
-        "<html><body><h1>Hello from C++ Web Server!</h1></body></html>";
-    send(client_socket, http_response.c_str(), http_response.length(), 0); 
+Request Server::get_request(int client_socket_fd) { 
+    char buffer[CONFIG.REQUEST_BYTES_LIMIT];
+    recv(client_socket_fd, buffer, CONFIG.REQUEST_BYTES_LIMIT, 0);
+    return build_request(buffer);
 }
+
 
 void Server::run() { 
     while (true) { 
         Client client(socket_fd); 
-        char buffer[CONFIG.REQUEST_BYTES_LIMIT];
-        recv(client.socket_fd, buffer, CONFIG.REQUEST_BYTES_LIMIT, 0);
-        std::cout << buffer << std::endl; 
-        
-        handle_request(client.socket_fd);
+        Request request = get_request(client.socket_fd);
+        array<string, 2> method_route_pair {request.method, request.route};
+        void(*handle_request)(const Request&, Response&) = route_mapper[method_route_pair];
+        Response response; 
+        handle_request(request, response);
+        const char* response_str = response.body.c_str(); 
+        send(client.socket_fd, response_str, response.body.length(), 0);
     }
+}
+
+void Server::get(const string& route, void(*route_function)(const Request&, Response&)) { 
+    route_mapper[array<string, 2>{"GET", route}] = route_function;
 }
 
