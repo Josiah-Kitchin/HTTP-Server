@@ -12,22 +12,27 @@
 #include "response.hpp"
 #include <map> 
 #include <array> 
+#include "config.hpp"
 
 
+using namespace std; 
 class Server { 
 
 public: 
-    Server(int port); //Initalizes the server on a given port 
+    Server(const ServerConfig&);  
     ~Server();
     void run(); 
-    void get(const string&, void(*)(const Request&, Response&));
-    
+    void GET(const string&, void(*)(const Request&, Response&));
+    string get_page(const string&);
+
 private: 
+    ServerConfig config; 
     int socket_fd; 
     sockaddr_in server_address; 
     Request get_request(int); 
-    std::map<std::array<std::string, 2>, void(*)(const Request&, Response&)> route_mapper; 
-    
+    //Routes an array of Method and Route to functions set by the user 
+    map<array<string, 2>, void(*)(const Request&, Response&)> route_mapper; 
+
 };
 
 

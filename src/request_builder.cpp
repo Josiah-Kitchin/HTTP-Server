@@ -65,6 +65,3 @@ Request build_request(char* request_buffer) {
     return request; 
 }
 
-
-
-

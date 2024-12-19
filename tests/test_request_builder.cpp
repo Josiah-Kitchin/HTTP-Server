@@ -29,5 +29,20 @@ TEST(build_request, invalid_route) {
     ASSERT_FALSE(request.valid);
 }
 
+TEST(build_request, no_request) { 
+    char request_str[] = "";
+    Request request = build_request(request_str); 
+    ASSERT_FALSE(request.valid);
+}
+
+TEST(build_request, no_route) {
+    char request_str[] = "GET /HTTP";
+    Request request = build_request(request_str);
+    ASSERT_FALSE(request.valid);
+}
+
+
+
+
 
 

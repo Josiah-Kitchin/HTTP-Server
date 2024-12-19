@@ -5,7 +5,8 @@
 using namespace std; 
 
 struct Response { 
-    string status; 
+    string version = "HTTP/1.1";
+    int status = 200; 
     string body; 
 };
 

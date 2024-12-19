@@ -1,8 +1,11 @@
 
+#ifndef SERVERCONFIG_HPP
+#define SERVERCONFIG_HPP
 
-struct server_config { 
-    const int PORT = 8080; 
-    const int REQUEST_BYTES_LIMIT = 1500;
+struct ServerConfig { 
+    int port = 8080; 
+    int request_bytes_limit = 1500;
+    string serve_dir = ""; 
 };
 
-const server_config CONFIG;  
+#endif
