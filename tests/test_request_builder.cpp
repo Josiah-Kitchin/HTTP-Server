@@ -1,7 +1,8 @@
 
 #include <gtest/gtest.h> 
-#include "request_builder.hpp"
+#include "req_res.hpp"
 
+using namespace uoserve; 
 TEST(build_request, get) { 
     
     char request_str[] = "GET /index.html HTTP/0.9";

@@ -12,14 +12,16 @@
    Accepts a connection from a given server socket file descripter
 */
 
-class Client { 
-public: 
-    Client(int); 
-    ~Client(); 
-    int socket_fd;
-    sockaddr_in address; 
-    socklen_t address_len;
-};
+namespace uoserve { 
+    class Client { 
+    public: 
+        Client(int); 
+        ~Client(); 
+        int socket_fd;
+        sockaddr_in address; 
+        socklen_t address_len;
+    };
+}
 
 #endif
 

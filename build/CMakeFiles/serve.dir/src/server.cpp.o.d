@@ -177,9 +177,8 @@ CMakeFiles/serve.dir/src/server.cpp.o: \
  /usr/include/netinet/in.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- /home/josiah/Projects/server/include/request.hpp \
- /home/josiah/Projects/server/include/response.hpp \
- /usr/include/c++/13/map /usr/include/c++/13/bits/stl_tree.h \
+ /home/josiah/Projects/server/include/req_res.hpp /usr/include/c++/13/map \
+ /usr/include/c++/13/bits/stl_tree.h \
  /usr/include/c++/13/ext/aligned_buffer.h \
  /usr/include/c++/13/bits/node_handle.h \
  /usr/include/c++/13/bits/stl_map.h \
@@ -187,9 +186,10 @@ CMakeFiles/serve.dir/src/server.cpp.o: \
  /usr/include/c++/13/bits/erase_if.h /usr/include/c++/13/array \
  /usr/include/c++/13/compare \
  /home/josiah/Projects/server/include/config.hpp \
+ /home/josiah/Projects/server/include/client.hpp \
  /home/josiah/Projects/server/include/config.hpp \
  /home/josiah/Projects/server/include/client.hpp \
- /home/josiah/Projects/server/include/request_builder.hpp \
+ /home/josiah/Projects/server/include/req_res.hpp \
  /usr/include/c++/13/filesystem /usr/include/c++/13/bits/fs_fwd.h \
  /usr/include/c++/13/cstdint \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \
