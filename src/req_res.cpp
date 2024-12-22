@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <array>
 #include <vector> 
+#include <sstream> 
 
 using namespace uoserve; 
 
@@ -24,51 +25,77 @@ bool is_valid_route(const string& route) {
      return true; 
 }
 
+
 Request build_request(char* request_buffer) { 
-    /* The position of some data depends on the position of other data, so all parsing is set to one function 
-       to show the progression of gathering data from the request 
+    /*
+        Parses a http requet c string to a request object 
+        
+        "GET /index.html HTTP/1.0\r\n"
+        "Host: www.example.com\r\n"
+        "User-Agent: Mozilla/5.0\r\n"
+        "\r\n"; -> Request
+            Request.method == GET 
+            Request.rotue == /index.html
+            Request.version == HTTP/1.0
+            Request["Host"] == www.example.com
+            Request["User-Agent"] == Mozilla/5.0
 
-       GET /index.html HTTP/1.0
-       finds GET
-       finds HTTP/1.0
-       uses the positions of the method and version to find the route 
+        if an error is thrown, the request will just be returned empty and will be caught as invalid by 
+        is_vaild_request function 
 
-       if the request is invalid, it will return a request object with the valid flag set to false
-       
-    */ 
-    Request request; 
-    string request_str(request_buffer);
-    std::array<string, 1> methods{"GET"};
-    bool method_found = false; 
-    for (const auto& method : methods) { 
-        if (request_str.compare(0, method.length(), method) == 0) { 
-            request.method = method; 
-            method_found = true; 
+    */
+
+    try { 
+        std::string request_str(request_buffer);
+        std::istringstream requestStream(request_str);
+        std::string line;
+        Request request; 
+
+        // Parse the request line (GET /index.html HTTP/1.0)
+        std::getline(requestStream, line);
+        std::istringstream requestLineStream(line);
+        requestLineStream >> request.method >> request.route >> request.version;
+
+        // Parse headers (until we get an empty line)
+        while (std::getline(requestStream, line) && line != "\r") {
+            if (line.empty()) continue;  // Skip empty lines
+
+            size_t pos = line.find(":");
+            if (pos != std::string::npos) {
+                std::string headerName = line.substr(0, pos);
+                std::string headerValue = line.substr(pos + 1);
+                // Trim leading/trailing spaces
+                headerValue.erase(0, headerValue.find_first_not_of(" \t"));
+                headerValue.erase(headerValue.find_last_not_of(" \t") + 1);
+                headerValue.erase(headerValue.find_last_of("\r"));
+                request.headers[headerName] = headerValue;
+            }
         }
-    }
-    if (!method_found) {
+
+        // Parse the body (if any)
+        std::ostringstream bodyStream;
+        bodyStream << requestStream.rdbuf();
+        request.body = bodyStream.str();
+        request.body.erase(request.body.find_last_not_of("\r\n") + 1);
+
+        return request;
+    } catch (const exception& error) { 
+        Request request; 
+        request.method = "invalid";
         return request; 
     }
-
-    size_t version_position = request_str.find(" HTTP/", request.method.length());
-    if (version_position == string::npos) {
-        return request; 
-    }
-
-    string route = request_str.substr(request.method.length() + 1, version_position - request.method.length() - 1);
-    if (!is_valid_route(route)) { 
-        return request; 
-    }
-    request.route = route; 
-
-    request.valid = true; 
-    return request; 
 }
 
 
 std::ostream& operator<<(std::ostream& out, const Request& request) { 
+    //For request logging 
     out << "Method: " << request.method << '\n';
     out << "Route: " << request.route << '\n'; 
+    out << "Version: " << request.version << '\n';
+    out << "Body: " << request.body << '\n';
+    for (const auto& pair: request.headers) { 
+        out << pair.first << ": " << pair.second << "\n"; 
+    }
     return out; 
 }
 
@@ -123,16 +150,76 @@ std::string get_status_message(int status_code) {
     }
 }
 
-string build_response(const Response& response) { 
+Response::Response() { 
+    //Sets default response members and hetters
+    version = "HTTP/1.1";
+    status = 200; 
+    headers["Content-Type"] = "text/html";
+    headers["Connection"] = "close";
+}
+
+string build_response(Response& response) { 
     /* Returns a string of a response object complient with HTTP */
+    response.headers["Content-Length"] = to_string(response.body.size());
 
     string message = get_status_message(response.status);
+    string headers; 
+    for (const auto& pair: response.headers) { 
+        headers += pair.first + ": " + pair.second + "\r\n";
+    }
+    headers += "\r\n";
+    
     string response_str =
-        response.version + " " + 
-        to_string(response.status) + " " + message + "\r\n" + 
-        "Content-Type: text/html\r\n\r\n" +
-        response.body; 
+        response.version + " " + to_string(response.status) + " " + message + "\r\n" + 
+        headers + response.body;  
+
     return response_str; 
+}
+
+bool is_valid_request(const Request& request) { 
+    /* Check each of the members to see if not empty and is valid http*/
+
+    array<string, 7> methods{"GET", "POST", "HEAD", "PUT", "DELETE", "OPTIONS", "TRACE"};
+    bool has_valid_method = false; 
+    for (const string& method : methods) { 
+        if (request.method == method) { 
+            has_valid_method = true; 
+            break; 
+        }
+    }
+    if (!has_valid_method) { 
+        return false; 
+    }
+
+    array<string, 16> forbidden_route_chars = {
+        "%00",   // Null byte
+        "%20",   // Space
+        "%22",   // Double quote (")
+        "%23",   // Hash (#)
+        "%25",   // Percent (%)
+        "%26",   // Ampersand (&)
+        "%27",   // Single quote (')
+        "%28",   // Left parenthesis (
+        "%29",   // Right parenthesis )
+        "%3C",   // Less than (<)
+        "%3E",   // Greater than (>)
+        "%5C",   // Backslash (\)
+        "%5E",   // Circumflex accent (^)
+        "%60",   // Grave accent (`)
+        "..", 
+        "~"     
+    };
+
+    for (const string& chars : forbidden_route_chars) { 
+        if (request.route.find(chars) != string::npos) { 
+            return false; 
+        }
+    }
+
+    if (request.version != "HTTP/1.0" && request.version != "HTTP/1.1") { 
+        return false; 
+    }
+    return true; 
 }
 
 

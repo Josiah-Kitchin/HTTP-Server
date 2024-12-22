@@ -9,7 +9,6 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/josiah/Projects/server/src/client.cpp" "CMakeFiles/serve.dir/src/client.cpp.o" "gcc" "CMakeFiles/serve.dir/src/client.cpp.o.d"
-  "/home/josiah/Projects/server/src/main.cpp" "CMakeFiles/serve.dir/src/main.cpp.o" "gcc" "CMakeFiles/serve.dir/src/main.cpp.o.d"
   "/home/josiah/Projects/server/src/req_res.cpp" "CMakeFiles/serve.dir/src/req_res.cpp.o" "gcc" "CMakeFiles/serve.dir/src/req_res.cpp.o.d"
   "/home/josiah/Projects/server/src/server.cpp" "CMakeFiles/serve.dir/src/server.cpp.o" "gcc" "CMakeFiles/serve.dir/src/server.cpp.o.d"
   )

@@ -28,7 +28,7 @@ Server::Server(const ServerConfig& user_config) {
     server_address.sin_port = htons(config.port);
 
     if (bind(socket_fd, (struct sockaddr*)&server_address, sizeof(server_address)) == -1) { 
-        throw std::runtime_error("Server failed to bind the socket to the server address");
+        throw std::runtime_error("Server failed to use port " + to_string(config.port));
     }
 
     if (listen(socket_fd, 5) == -1) { 
@@ -44,15 +44,37 @@ void Server::run() {
     }
 }
 
-/* Server route setters */
+/* Server route and middleware setters */
 
 void Server::GET(const string& route, void(*route_function)(const Request&, Response&)) { 
     route_mapper[array<string, 2>{"GET", route}] = route_function;
 }
-
+void Server::POST(const string& route, void(*route_function)(const Request&, Response&)) { 
+    route_mapper[array<string, 2>{"POST", route}] = route_function;
+}
+void Server::HEAD(const string& route, void(*route_function)(const Request&, Response&)) { 
+    route_mapper[array<string, 2>{"HEAD", route}] = route_function;
+}
+void Server::PUT(const string& route, void(*route_function)(const Request&, Response&)) { 
+    route_mapper[array<string, 2>{"PUT", route}] = route_function;
+}
+void Server::DELETE(const string& route, void(*route_function)(const Request&, Response&)) { 
+    route_mapper[array<string, 2>{"DELETE", route}] = route_function;
+}
+void Server::OPTIONS(const string& route, void(*route_function)(const Request&, Response&)) { 
+    route_mapper[array<string, 2>{"OPTIONS", route}] = route_function;
+}
+void Server::TRACE(const string& route, void(*route_function)(const Request&, Response&)) { 
+    route_mapper[array<string, 2>{"TRACE", route}] = route_function;
+}
 void Server::UNMATCHED(void(*route_function)(const Request&, Response&)) { 
     route_mapper[array<string, 2>{"ANY", "UNMATCHED"}] = route_function; 
 }
+
+void Server::add_middleware(void(*middleware_function)(Request&)) { 
+    middleware.push_back(middleware_function);
+}
+
 
 /* Server function utils */
 
@@ -65,12 +87,10 @@ string Server::get_page(const string& relative_file_path) {
     fs::path page_dir = config.serve_dir; 
     try { 
         for (const auto& entry: fs::directory_iterator(page_dir)) { 
-            cout << "serching " << entry.path() << endl;
             if (entry.is_regular_file() && entry.path().filename() == relative_file_path) { 
                 ifstream file(entry.path());
                 stringstream buffer; 
                 buffer << file.rdbuf(); 
-                cout << "found " << buffer.str() << endl;
                 return buffer.str(); 
             }
         }
@@ -94,10 +114,15 @@ Request Server::get_request(int client_socket_fd) {
 }
 
 
-void Server::send_response(const Client& client, const Request& request) { 
-    if (!request.valid) { 
+void Server::send_response(const Client& client, Request& request) { 
+    if (!is_valid_request(request)) { 
         string invalid_response = build_400_response(); 
         send(client.socket_fd, invalid_response.c_str(), invalid_response.length(), 0);
+    }
+
+    //Execute middleware functions
+    for (const auto& middleware_function : middleware) { 
+        middleware_function(request);
     }
 
     Response response; 
