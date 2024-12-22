@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(server CXX)
 
 
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "*.cpp")
 
 add_executable(serve ${SOURCES})
 
