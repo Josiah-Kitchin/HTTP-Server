@@ -10,6 +10,7 @@
 /* 
    Client object to be used by the server object 
    Accepts a connection from a given server socket file descripter
+   The socket_fd will then be used to serve content 
 */
 
 namespace uoserve { 

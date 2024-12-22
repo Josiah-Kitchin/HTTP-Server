@@ -22,15 +22,19 @@ namespace uoserve {
         string body; 
         map<string, string> headers; 
 
-        Response(); 
+        Response(); //The response constructor sets a default response 
     };
 }
     //For logging purposes 
     std::ostream& operator<<(std::ostream&, const uoserve::Request&); 
-    uoserve::Request build_request(char*);
-    bool is_valid_request(const uoserve::Request&);
 
+    //Takes a raw http request and turns it into a request object 
+    uoserve::Request build_request(char*);
+    //Must be called before using any request, will validate the members are not empty and propper http
+    bool is_valid_request(const uoserve::Request&);
+    //Takes a response object and turns it into raw http 
     std::string build_response(uoserve::Response&);
+    //Default status code responses 
     std::string build_404_response(); 
     std::string build_400_response(); 
 

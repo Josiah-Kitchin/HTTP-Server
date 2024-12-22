@@ -8,14 +8,21 @@
 #include <filesystem> 
 #include <fstream>
 #include <sstream>
+#include <csignal> 
 
     
 using namespace uoserve; 
+
+//The server instance is for closing sockets on Ctrl C
+static Server* server_instance = nullptr; 
+
 /* ---------------------- INTERFACE FUNCTIONS ----------------------- */
+
 
 Server::Server(const ServerConfig& user_config) {
     /* Initalize the server by creating a socket, binding the server to the address and port then 
        listening to the socket */
+    signal(SIGINT, handle_sigint);
 
     config = user_config; 
 
@@ -34,6 +41,7 @@ Server::Server(const ServerConfig& user_config) {
     if (listen(socket_fd, 5) == -1) { 
         throw std::runtime_error("Server failed to listen on the socket");
     }
+    server_instance = this; 
 }
 
 void Server::run() { 
@@ -115,6 +123,8 @@ Request Server::get_request(int client_socket_fd) {
 
 
 void Server::send_response(const Client& client, Request& request) { 
+    /* Send a response to a client based on the clients request */
+
     if (!is_valid_request(request)) { 
         string invalid_response = build_400_response(); 
         send(client.socket_fd, invalid_response.c_str(), invalid_response.length(), 0);
@@ -147,3 +157,21 @@ void Server::send_response(const Client& client, Request& request) {
     }
     send(client.socket_fd, response_str.c_str(), response_str.length(), 0);
 }
+
+void Server::handle_sigint(int sig) { 
+    //Closes the socket of the global pointer to the server 
+    if (server_instance != nullptr) { 
+        server_instance->close_socket();
+    }
+    exit(0);
+}
+
+void Server::close_socket() { 
+    if (socket_fd != -1) {
+        close(socket_fd);
+    }
+}
+
+
+
+
