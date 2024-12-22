@@ -7,7 +7,7 @@
 
 uoserve::ServerConfig config = {
     .port = 8080, 
-    .serve_dir = string(std::getenv("HOME")) + "/Projects/server_example/pages"
+    .serve_dir = string(std::getenv("HOME")) + "/Projects/server/example/pages"
 };
 
 uoserve::Server server(config);
