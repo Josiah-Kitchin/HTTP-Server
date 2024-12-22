@@ -117,24 +117,24 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named serve
+# Target rules for targets named uoserve
 
 # Build rule for target.
-serve: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 serve
-.PHONY : serve
+uoserve: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 uoserve
+.PHONY : uoserve
 
 # fast build rule for target.
-serve/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/build
-.PHONY : serve/fast
+uoserve/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uoserve.dir/build.make CMakeFiles/uoserve.dir/build
+.PHONY : uoserve/fast
 
 src/client.o: src/client.cpp.o
 .PHONY : src/client.o
 
 # target to build an object file
 src/client.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/client.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uoserve.dir/build.make CMakeFiles/uoserve.dir/src/client.cpp.o
 .PHONY : src/client.cpp.o
 
 src/client.i: src/client.cpp.i
@@ -142,7 +142,7 @@ src/client.i: src/client.cpp.i
 
 # target to preprocess a source file
 src/client.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/client.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uoserve.dir/build.make CMakeFiles/uoserve.dir/src/client.cpp.i
 .PHONY : src/client.cpp.i
 
 src/client.s: src/client.cpp.s
@@ -150,7 +150,7 @@ src/client.s: src/client.cpp.s
 
 # target to generate assembly for a file
 src/client.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/client.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uoserve.dir/build.make CMakeFiles/uoserve.dir/src/client.cpp.s
 .PHONY : src/client.cpp.s
 
 src/req_res.o: src/req_res.cpp.o
@@ -158,7 +158,7 @@ src/req_res.o: src/req_res.cpp.o
 
 # target to build an object file
 src/req_res.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/req_res.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uoserve.dir/build.make CMakeFiles/uoserve.dir/src/req_res.cpp.o
 .PHONY : src/req_res.cpp.o
 
 src/req_res.i: src/req_res.cpp.i
@@ -166,7 +166,7 @@ src/req_res.i: src/req_res.cpp.i
 
 # target to preprocess a source file
 src/req_res.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/req_res.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uoserve.dir/build.make CMakeFiles/uoserve.dir/src/req_res.cpp.i
 .PHONY : src/req_res.cpp.i
 
 src/req_res.s: src/req_res.cpp.s
@@ -174,7 +174,7 @@ src/req_res.s: src/req_res.cpp.s
 
 # target to generate assembly for a file
 src/req_res.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/req_res.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uoserve.dir/build.make CMakeFiles/uoserve.dir/src/req_res.cpp.s
 .PHONY : src/req_res.cpp.s
 
 src/server.o: src/server.cpp.o
@@ -182,7 +182,7 @@ src/server.o: src/server.cpp.o
 
 # target to build an object file
 src/server.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/server.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uoserve.dir/build.make CMakeFiles/uoserve.dir/src/server.cpp.o
 .PHONY : src/server.cpp.o
 
 src/server.i: src/server.cpp.i
@@ -190,7 +190,7 @@ src/server.i: src/server.cpp.i
 
 # target to preprocess a source file
 src/server.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/server.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uoserve.dir/build.make CMakeFiles/uoserve.dir/src/server.cpp.i
 .PHONY : src/server.cpp.i
 
 src/server.s: src/server.cpp.s
@@ -198,7 +198,7 @@ src/server.s: src/server.cpp.s
 
 # target to generate assembly for a file
 src/server.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/serve.dir/build.make CMakeFiles/serve.dir/src/server.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/uoserve.dir/build.make CMakeFiles/uoserve.dir/src/server.cpp.s
 .PHONY : src/server.cpp.s
 
 # Help Target
@@ -209,7 +209,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... serve"
+	@echo "... uoserve"
 	@echo "... src/client.o"
 	@echo "... src/client.i"
 	@echo "... src/client.s"

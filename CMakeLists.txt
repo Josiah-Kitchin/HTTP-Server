@@ -1,14 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
-project(server CXX)
+project(uoserve_http CXX)
 
 
 
 
 file(GLOB SOURCES "src/*.cpp")
-add_executable(serve ${SOURCES})
+add_library(uoserve STATIC ${SOURCES})
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-target_compile_options(serve PRIVATE -Wall -Wextra -g) 
+target_include_directories(uoserve PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(CMAKE_BUILD_TYPE Debug)
