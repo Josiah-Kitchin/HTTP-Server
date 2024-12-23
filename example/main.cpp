@@ -6,7 +6,7 @@
 
 
 uoserve::ServerConfig config = {
-    .port = 3000, 
+    .port = 8080, 
     .serve_dir = string(std::getenv("HOME")) + "/Projects/server/example/pages"
 };
 
@@ -26,6 +26,7 @@ int main() {
         response.body = server.get_page("about.html");
     });
 
+    server.set_404_page("404.html");
 
     std::cout << "Running server on http://localhost:" << config.port << std::endl;
     server.run(); 

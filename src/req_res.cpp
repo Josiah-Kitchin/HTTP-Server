@@ -223,20 +223,17 @@ bool is_valid_request(const Request& request) {
 }
 
 
-string build_404_response() { 
-     return "HTTP/1.0 404 Not Found\r\n"
-           "Content-Type: text/html\r\n"
-           "Content-Length: 48\r\n"
-           "Connection: close\r\n"
-           "\r\n"
-           "<html><body><h1>404 Not Found</h1></body></html>\r\n";
+Response default_404_response() { 
+    Response response; 
+    response.status = 404; 
+    response.body = "<html><body><h1>404 Not Found</h1></body></html>\r\n";
+    return response; 
 }
 
-string build_400_response() { 
-    return  "HTTP/1.0 400 Bad Request\r\n"
-            "Content-Type: text/html\r\n"
-            "Content-Length: 58\r\n"
-            "Connection: close\r\n"
-            "\r\n"
-            "<html><body><h1>400 Bad Request</h1><p>Your request is invalid.</p></body></html>\r\n";
+
+Response default_400_response() { 
+    Response response; 
+    response.status = 400;
+    response.body = "<html><body><h1>400 Bad Request</h1><p>Your request is invalid.</p></body></html>\r\n";
+    return response; 
 }

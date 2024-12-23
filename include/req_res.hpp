@@ -35,8 +35,9 @@ namespace uoserve {
     //Takes a response object and turns it into raw http 
     std::string build_response(uoserve::Response&);
     //Default status code responses 
-    std::string build_404_response(); 
-    std::string build_400_response(); 
+
+    uoserve::Response default_404_response(); 
+    uoserve::Response default_400_response();
 
 
 

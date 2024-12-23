@@ -25,6 +25,7 @@ Server::Server(const ServerConfig& user_config) {
     signal(SIGINT, handle_sigint);
 
     config = user_config; 
+    response_404 = default_404_response(); 
 
     socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_fd == -1) { 
@@ -55,32 +56,42 @@ void Server::run() {
 /* Server route and middleware setters */
 
 void Server::GET(const string& route, void(*route_function)(const Request&, Response&)) { 
-    route_mapper[array<string, 2>{"GET", route}] = route_function;
+    route_mapper[pair<string, string>{"GET", route}] = route_function;
 }
 void Server::POST(const string& route, void(*route_function)(const Request&, Response&)) { 
-    route_mapper[array<string, 2>{"POST", route}] = route_function;
+    route_mapper[pair<string, string>{"POST", route}] = route_function;
 }
 void Server::HEAD(const string& route, void(*route_function)(const Request&, Response&)) { 
-    route_mapper[array<string, 2>{"HEAD", route}] = route_function;
+    route_mapper[pair<string, string>{"HEAD", route}] = route_function;
 }
 void Server::PUT(const string& route, void(*route_function)(const Request&, Response&)) { 
-    route_mapper[array<string, 2>{"PUT", route}] = route_function;
+    route_mapper[pair<string, string>{"PUT", route}] = route_function;
 }
 void Server::DELETE(const string& route, void(*route_function)(const Request&, Response&)) { 
-    route_mapper[array<string, 2>{"DELETE", route}] = route_function;
+    route_mapper[pair<string, string>{"DELETE", route}] = route_function;
 }
 void Server::OPTIONS(const string& route, void(*route_function)(const Request&, Response&)) { 
-    route_mapper[array<string, 2>{"OPTIONS", route}] = route_function;
+    route_mapper[pair<string, string>{"OPTIONS", route}] = route_function;
 }
 void Server::TRACE(const string& route, void(*route_function)(const Request&, Response&)) { 
-    route_mapper[array<string, 2>{"TRACE", route}] = route_function;
+    route_mapper[pair<string, string>{"TRACE", route}] = route_function;
 }
 void Server::UNMATCHED(void(*route_function)(const Request&, Response&)) { 
-    route_mapper[array<string, 2>{"ANY", "UNMATCHED"}] = route_function; 
+    route_mapper[pair<string, string>{"ANY", "UNMATCHED"}] = route_function; 
 }
+
+
 
 void Server::add_middleware(void(*middleware_function)(Request&)) { 
     middleware.push_back(middleware_function);
+}
+
+void Server::set_404_page(const string& relative_page_path) { 
+    string page_content = get_page(relative_page_path);
+    Response response;
+    response.status = 404; 
+    response.body = page_content; 
+    response_404 = response; 
 }
 
 
@@ -89,7 +100,9 @@ void Server::add_middleware(void(*middleware_function)(Request&)) {
 string Server::get_page(const string& relative_file_path) { 
     /* Returns a string of the pages contents 
        Paths are searched relative to the page_dir string in the object 
-       It is not recurisve, the full path starting from page_dir must be given */
+       It is not recurisve, the full path starting from page_dir must be given 
+
+       Throws a runtime error if the page is not found or there is an error navigating the filesystem  */
 
     namespace fs = std::filesystem; 
     fs::path page_dir = config.serve_dir; 
@@ -102,9 +115,9 @@ string Server::get_page(const string& relative_file_path) {
                 return buffer.str(); 
             }
         }
-        return "";
+        throw runtime_error("File not found: " + relative_file_path);
     } catch (const fs::filesystem_error& error) { 
-        return "";
+        throw runtime_error("Filesystem error :" + string(error.what()));
     }
 }
 
@@ -126,7 +139,7 @@ void Server::send_response(const Client& client, Request& request) {
     /* Send a response to a client based on the clients request */
 
     if (!is_valid_request(request)) { 
-        string invalid_response = build_400_response(); 
+        string invalid_response = build_response(response_404); 
         send(client.socket_fd, invalid_response.c_str(), invalid_response.length(), 0);
     }
 
@@ -152,7 +165,7 @@ void Server::send_response(const Client& client, Request& request) {
             send(client.socket_fd, response_str.c_str(), response_str.length(), 0);
         } else { 
             //if the user has not set an unmatched route, send a default 404
-            response_str = build_404_response(); 
+            response_str = build_response(response_404);
         }
     }
     send(client.socket_fd, response_str.c_str(), response_str.length(), 0);
