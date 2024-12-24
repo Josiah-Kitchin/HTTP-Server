@@ -1,25 +1,29 @@
 #ifndef THREAD_POOL_HPP
 #define THREAD_POOL_HPP
 
-#include <iostream>
-#include <thread>
-#include <vector>
-#include <queue>
-#include <mutex>
 #include <condition_variable>
 #include <functional>
-#include <atomic>
-#include <unistd.h>
-#include <netinet/in.h>
-#include <cstring>
+#include <iostream>
+#include <mutex>
+#include <queue>
+#include <thread>
+#include <vector> 
+using namespace std; 
 
-class ThreadPool { 
+
+class ThreadPool {
 public: 
-    ThreadPool(); 
-    ~ThreadPool();
+    ThreadPool(size_t num_threads = thread::hardware_concurrency()); 
+    ~ThreadPool(); 
+    void enqueue(function<void()>); 
 
+private: 
+    vector<thread> threads; 
+    queue<function<void()>> tasks; 
+    mutex queue_mutex; 
+    condition_variable cv; 
+    bool stop = false; 
 };
-
 
 
 

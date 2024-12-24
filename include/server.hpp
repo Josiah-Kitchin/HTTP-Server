@@ -12,6 +12,7 @@
 #include <map> 
 #include <utility> 
 #include <vector> 
+#include <functional> 
 
 #include "config.hpp"
 #include "client.hpp"
@@ -38,16 +39,16 @@ namespace uoserve {
         For example, server.GET("/route", handle_get) will set the handle_get function to be called on the 
         request and response if a get request is sent to /route */
 
-        void GET(const string&, void(*)(const Request&, Response&));
-        void POST(const string&, void(*)(const Request&, Response&));
-        void HEAD(const string&, void(*)(const Request&, Response&));
-        void PUT(const string&, void(*)(const Request&, Response&));
-        void DELETE(const string&, void(*)(const Request&, Response&));
-        void OPTIONS(const string&, void(*)(const Request&, Response&));
-        void TRACE(const string&, void(*)(const Request&, Response&));
-        void UNMATCHED(void(*)(const Request&, Response&));
+        void GET(const string&, function<void(const Request&, Response&)>);
+        void POST(const string&, function<void(const Request&, Response&)>);
+        void HEAD(const string&, function<void(const Request&, Response&)>);
+        void PUT(const string&, function<void(const Request&, Response&)>);
+        void DELETE(const string&, function<void(const Request&, Response&)>);
+        void OPTIONS(const string&, function<void(const Request&, Response&)>);
+        void TRACE(const string&, function<void(const Request&, Response&)>);
+        void UNMATCHED(function<void(const Request&, Response&)>);
         //Calls a userdefined function on every request before it reaches the function mapped to the given route 
-        void add_middleware(void(*)(Request&));
+        void add_middleware(function<void(Request&)>);
         void set_404_page(const string&); 
 
     /* Route handler utils: 
@@ -67,12 +68,12 @@ namespace uoserve {
         Request get_request(int); 
 
         //Routes an array of an http methods and routes to functions set by the user 
-        map<pair<string, string>, void(*)(const Request&, Response&)> route_mapper; 
+        map<pair<string, string>, function<void(const Request&, Response&)>> route_mapper; 
 
         //A vector of middleware so that each middleware function can be called on the request before reaching the route mapper
-        vector<void(*)(Request&)> middleware; 
+        vector<function<void(Request&)>> middleware; 
 
-        void send_response(const Client&, Request&);
+        void send_response(int, Request&);
 
         //For graceful interupt, allows for Ctrl C to close the server socket 
         static void handle_sigint(int); 
@@ -81,7 +82,6 @@ namespace uoserve {
         //Default response to 404, can be changed by user 
         Response response_404; 
         Response response_400; 
-
     };
 }
 

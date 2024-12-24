@@ -6,7 +6,7 @@
 
 
 uoserve::ServerConfig config = {
-    .port = 8080, 
+    .port = 3000, 
     .serve_dir = string(std::getenv("HOME")) + "/Projects/server/example/pages"
 };
 
@@ -14,9 +14,9 @@ uoserve::Server server(config);
 
 
 int main() { 
-    server.add_middleware([](uoserve::Request& request){ 
-        std::cout << request << std::endl;
-    });
+    // server.add_middleware([](uoserve::Request& request){ 
+    //     std::cout << request << std::endl;
+    // });
 
     server.GET("/", [](const uoserve::Request& request, uoserve::Response& response) {
         response.body = server.get_page("index.html");

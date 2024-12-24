@@ -5,16 +5,19 @@
 #include "config.hpp"
 #include "client.hpp"
 #include "req_res.hpp"
+#include "thread_pool.hpp"
 #include <filesystem> 
 #include <fstream>
 #include <sstream>
 #include <csignal> 
+#include <memory> 
 
     
 using namespace uoserve; 
 
 //The server instance is for closing sockets on Ctrl C
 static Server* server_instance = nullptr; 
+static ThreadPool thread_pool(4);
 
 /* ---------------------- INTERFACE FUNCTIONS ----------------------- */
 
@@ -47,42 +50,46 @@ Server::Server(const ServerConfig& user_config) {
 
 void Server::run() { 
     while (true) { 
-        Client client(socket_fd); 
+        Client client(socket_fd);
+        cout << "Client with socket fd " << client.socket_fd << " accepted" << endl;;
         Request request = get_request(client.socket_fd);
-        send_response(client, request);
+        thread_pool.enqueue([this, client] {
+            Request request = get_request(client.socket_fd);
+            send_response(client.socket_fd, request);
+        });
     }
 }
 
 /* Server route and middleware setters */
 
-void Server::GET(const string& route, void(*route_function)(const Request&, Response&)) { 
+void Server::GET(const string& route, function<void(const Request&, Response&)> route_function) { 
     route_mapper[pair<string, string>{"GET", route}] = route_function;
 }
-void Server::POST(const string& route, void(*route_function)(const Request&, Response&)) { 
+void Server::POST(const string& route, function<void(const Request&, Response&)> route_function) { 
     route_mapper[pair<string, string>{"POST", route}] = route_function;
 }
-void Server::HEAD(const string& route, void(*route_function)(const Request&, Response&)) { 
+void Server::HEAD(const string& route, function<void(const Request&, Response&)> route_function) { 
     route_mapper[pair<string, string>{"HEAD", route}] = route_function;
 }
-void Server::PUT(const string& route, void(*route_function)(const Request&, Response&)) { 
+void Server::PUT(const string& route, function<void(const Request&, Response&)> route_function) { 
     route_mapper[pair<string, string>{"PUT", route}] = route_function;
 }
-void Server::DELETE(const string& route, void(*route_function)(const Request&, Response&)) { 
+void Server::DELETE(const string& route, function<void(const Request&, Response&)> route_function) { 
     route_mapper[pair<string, string>{"DELETE", route}] = route_function;
 }
-void Server::OPTIONS(const string& route, void(*route_function)(const Request&, Response&)) { 
+void Server::OPTIONS(const string& route, function<void(const Request&, Response&)> route_function) { 
     route_mapper[pair<string, string>{"OPTIONS", route}] = route_function;
 }
-void Server::TRACE(const string& route, void(*route_function)(const Request&, Response&)) { 
+void Server::TRACE(const string& route, function<void(const Request&, Response&)> route_function) { 
     route_mapper[pair<string, string>{"TRACE", route}] = route_function;
 }
-void Server::UNMATCHED(void(*route_function)(const Request&, Response&)) { 
+void Server::UNMATCHED(function<void(const Request&, Response&)> route_function) { 
     route_mapper[pair<string, string>{"ANY", "UNMATCHED"}] = route_function; 
 }
 
 
 
-void Server::add_middleware(void(*middleware_function)(Request&)) { 
+void Server::add_middleware(function<void(Request&)> middleware_function) { 
     middleware.push_back(middleware_function);
 }
 
@@ -135,12 +142,12 @@ Request Server::get_request(int client_socket_fd) {
 }
 
 
-void Server::send_response(const Client& client, Request& request) { 
+void Server::send_response(int client_socket_fd, Request& request) { 
     /* Send a response to a client based on the clients request */
 
     if (!is_valid_request(request)) { 
         string invalid_response = build_response(response_404); 
-        send(client.socket_fd, invalid_response.c_str(), invalid_response.length(), 0);
+        send(client_socket_fd, invalid_response.c_str(), invalid_response.length(), 0);
     }
 
     //Execute middleware functions
@@ -153,22 +160,22 @@ void Server::send_response(const Client& client, Request& request) {
 
     if (route_mapper.find({ request.method, request.route }) != route_mapper.end()) { 
         //handle the request to a user set function corresponding to the route
-        void(*handle_request)(const Request&, Response&) = route_mapper[{ request.method, request.route }];
+        auto handle_request = route_mapper[{ request.method, request.route }];
         handle_request(request, response);
         response_str = build_response(response);
     } else { 
         if (route_mapper.find({ "ANY", "UNMATCHED" }) != route_mapper.end()) { 
             //handle the request to a user set function correspoinding to unmatched routes 
-            void(*handle_request)(const Request&, Response&) = route_mapper[{ "ANY", "UNMATCHED" }];
+            auto handle_request = route_mapper[{ "ANY", "UNMATCHED" }];
             handle_request(request, response);
             response_str = build_response(response);
-            send(client.socket_fd, response_str.c_str(), response_str.length(), 0);
+            send(client_socket_fd, response_str.c_str(), response_str.length(), 0);
         } else { 
             //if the user has not set an unmatched route, send a default 404
             response_str = build_response(response_404);
         }
     }
-    send(client.socket_fd, response_str.c_str(), response_str.length(), 0);
+    send(client_socket_fd, response_str.c_str(), response_str.length(), 0);
 }
 
 void Server::handle_sigint(int sig) { 
