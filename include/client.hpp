@@ -16,12 +16,16 @@
 namespace uoserve { 
     class Client { 
     public: 
-        Client(int); 
+        Client(); 
+        Client(Client&&) noexcept;
+        Client& operator=(Client&&) noexcept;
         ~Client(); 
         int socket_fd;
         sockaddr_in address; 
         socklen_t address_len;
+        void wait_to_accept(int); 
     };
+    
 }
 
 #endif
