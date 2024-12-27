@@ -11,6 +11,7 @@
 #include <sstream>
 #include <csignal> 
 #include <memory> 
+#include <utility> 
 
     
 using namespace uoserve; 
@@ -50,12 +51,13 @@ Server::Server(const ServerConfig& user_config) {
 
 void Server::run() { 
     while (true) { 
-        Client client(socket_fd);
+        Client client;
+        client.wait_to_accept(socket_fd);
         cout << "Client with socket fd " << client.socket_fd << " accepted" << endl;;
-        Request request = get_request(client.socket_fd);
-        thread_pool.enqueue([this, client] {
-            Request request = get_request(client.socket_fd);
-            send_response(client.socket_fd, request);
+        thread_pool.enqueue([this, client_ptr = make_shared<Client>(move(client))] {
+            //Allows for the socket to be closed when the thread is finished with the client 
+            Request request = get_request(client_ptr -> socket_fd);
+            send_response(client_ptr->socket_fd, request);
         });
     }
 }
