@@ -3,7 +3,7 @@
 
 ## Overview
 
-This is a **C++ HTTP Server Library** implemented for learning purposes. The server is designed to support **HTTP 1.0** requests and responses. The goal of this project is to understand the fundamentals of HTTP, socket programming, and how web servers operate under the hood.
+This is a multithreaded **C++ HTTP Server Library** implemented for learning purposes. The server is designed to support **HTTP 1.0** requests and responses. The goal of this project is to understand the fundamentals of HTTP, socket programming, and how web servers operate under the hood.
 
 ## Features
 
