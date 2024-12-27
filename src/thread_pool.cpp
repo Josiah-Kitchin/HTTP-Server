@@ -23,9 +23,7 @@ ThreadPool::ThreadPool(size_t num_threads) {
                     task = move(tasks.front());
                     tasks.pop();
                 }
-                cout << "completing task " << endl;
                 task();
-                cout << "task complete " << endl;
             }
         });
     }

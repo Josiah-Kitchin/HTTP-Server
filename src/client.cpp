@@ -1,6 +1,7 @@
 
 
 #include "client.hpp"
+#include <iostream> 
 
 using namespace uoserve; 
 Client::Client() { 

@@ -18,7 +18,7 @@ using namespace uoserve;
 
 //The server instance is for closing sockets on Ctrl C
 static Server* server_instance = nullptr; 
-static ThreadPool thread_pool(4);
+static ThreadPool thread_pool(thread::hardware_concurrency());
 
 /* ---------------------- INTERFACE FUNCTIONS ----------------------- */
 
@@ -39,6 +39,11 @@ Server::Server(const ServerConfig& user_config) {
     server_address.sin_addr.s_addr = INADDR_ANY; 
     server_address.sin_port = htons(config.port);
 
+    int opt = 1; 
+    if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt)) < 0) {
+        throw std::runtime_error("Failed to set SO_REUSEPORT option");
+    }
+
     if (bind(socket_fd, (struct sockaddr*)&server_address, sizeof(server_address)) == -1) { 
         throw std::runtime_error("Server failed to use port " + to_string(config.port));
     }
@@ -53,7 +58,6 @@ void Server::run() {
     while (true) { 
         Client client;
         client.wait_to_accept(socket_fd);
-        cout << "Client with socket fd " << client.socket_fd << " accepted" << endl;;
         thread_pool.enqueue([this, client_ptr = make_shared<Client>(move(client))] {
             //Allows for the socket to be closed when the thread is finished with the client 
             Request request = get_request(client_ptr -> socket_fd);
@@ -88,7 +92,6 @@ void Server::TRACE(const string& route, function<void(const Request&, Response&)
 void Server::UNMATCHED(function<void(const Request&, Response&)> route_function) { 
     route_mapper[pair<string, string>{"ANY", "UNMATCHED"}] = route_function; 
 }
-
 
 
 void Server::add_middleware(function<void(Request&)> middleware_function) { 

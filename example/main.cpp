@@ -14,9 +14,10 @@ uoserve::Server server(config);
 
 
 int main() { 
-    // server.add_middleware([](uoserve::Request& request){ 
-    //     std::cout << request << std::endl;
-    // });
+
+    server.add_middleware([](uoserve::Request& request){ 
+        std::cout << request << std::endl;
+    });
 
     server.GET("/", [](const uoserve::Request& request, uoserve::Response& response) {
         response.body = server.get_page("index.html");
