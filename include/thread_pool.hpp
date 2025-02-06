@@ -3,7 +3,6 @@
 
 #include <condition_variable>
 #include <functional>
-#include <iostream>
 #include <mutex>
 #include <queue>
 #include <thread>
@@ -11,7 +10,8 @@
 using namespace std; 
 
 
-class ThreadPool {
+class ThreadPool 
+{
 public: 
     ThreadPool(size_t num_threads = thread::hardware_concurrency()); 
     ~ThreadPool(); 

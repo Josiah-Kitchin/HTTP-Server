@@ -7,8 +7,10 @@
 using namespace std; 
 
 
-namespace uoserve { 
-    struct Request { 
+namespace uoserve 
+{ 
+    struct Request 
+    { 
         string method; 
         string route; 
         string version; 
@@ -16,7 +18,8 @@ namespace uoserve {
         map<string, string> headers; 
     };
 
-    struct Response { 
+    struct Response 
+    { 
         string version;
         int status; 
         string body; 

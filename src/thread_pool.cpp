@@ -2,10 +2,13 @@
 #include "thread_pool.hpp"
 
 
-ThreadPool::ThreadPool(size_t num_threads) { 
+ThreadPool::ThreadPool(size_t num_threads) 
+{ 
     //Create worker threads 
-    for (size_t i = 0; i < num_threads; ++i) { 
-        threads.emplace_back([this]{ 
+    for (size_t i = 0; i < num_threads; ++i) 
+    { 
+        threads.emplace_back([this] 
+        { 
             while (true) { 
                 function<void()> task;  
                 {
@@ -13,14 +16,15 @@ ThreadPool::ThreadPool(size_t num_threads) {
                      //other threads can perform enqueue tasks
                     unique_lock<mutex> lock(queue_mutex);
                     //Make the thread wait until there is a task in the queue or stop condition is ste
-                    cv.wait(lock, [this] { 
+                    cv.wait(lock, [this] 
+                    { 
                         return !tasks.empty() || stop; 
                     });
 
-                    if (stop && tasks.empty()) { 
+                    if (stop && tasks.empty())  
                         return;
-                    }
-                    task = move(tasks.front());
+                    
+                    task = std::move(tasks.front());
                     tasks.pop();
                 }
                 task();
@@ -29,21 +33,22 @@ ThreadPool::ThreadPool(size_t num_threads) {
     }
 }
 
-ThreadPool::~ThreadPool() { 
+ThreadPool::~ThreadPool() 
+{ 
     {
         unique_lock<mutex> lock(queue_mutex);
         stop = true; 
     }
     cv.notify_all();
-    for (auto& thread : threads) { 
+    for (auto& thread : threads)  
         thread.join(); 
-    }
 }
 
-void ThreadPool::enqueue(function<void()> task) { 
+void ThreadPool::enqueue(function<void()> task) 
+{ 
     {
         unique_lock<mutex> lock(queue_mutex);
-        tasks.emplace(move(task));
+        tasks.emplace(std::move(task));
     }
     cv.notify_one();
 }

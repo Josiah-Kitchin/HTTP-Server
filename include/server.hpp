@@ -15,14 +15,15 @@
 #include <functional> 
 
 #include "config.hpp"
-#include "client.hpp"
 #include "req_res.hpp"
 
 
 using namespace std; 
-namespace uoserve {
+namespace uoserve 
+{
 
-    class Server { 
+    class Server 
+    { 
     /* The server object should be initialized once globally and will handle all server configurations and operations*/
 
     public: 

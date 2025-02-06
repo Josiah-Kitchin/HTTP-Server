@@ -1,13 +1,12 @@
 
 #include "req_res.hpp"
-#include <stdexcept>
 #include <array>
-#include <vector> 
 #include <sstream> 
 
 using namespace uoserve; 
 
-bool is_valid_route(const string& route) { 
+bool is_valid_route(const string& route) 
+{ 
     std::array<std::string, 7> forbidden_chars = {
         " ",   
         "\t", 
@@ -17,8 +16,10 @@ bool is_valid_route(const string& route) {
         "~", 
         "..",
     };
-    for (string ch : forbidden_chars) { 
-        if (route.find(ch) != string::npos) { 
+    for (string ch : forbidden_chars) 
+    { 
+        if (route.find(ch) != string::npos) 
+        { 
             return false; 
         }
      }
@@ -26,7 +27,8 @@ bool is_valid_route(const string& route) {
 }
 
 
-Request build_request(char* request_buffer) { 
+Request build_request(char* request_buffer) 
+{ 
     /*
         Parses a http requet c string to a request object 
         
@@ -45,7 +47,8 @@ Request build_request(char* request_buffer) {
 
     */
 
-    try { 
+    try 
+    { 
         std::string request_str(request_buffer);
         std::istringstream requestStream(request_str);
         std::string line;
@@ -57,11 +60,13 @@ Request build_request(char* request_buffer) {
         requestLineStream >> request.method >> request.route >> request.version;
 
         // Parse headers (until we get an empty line)
-        while (std::getline(requestStream, line) && line != "\r") {
+        while (std::getline(requestStream, line) && line != "\r") 
+        {
             if (line.empty()) continue;  // Skip empty lines
 
             size_t pos = line.find(":");
-            if (pos != std::string::npos) {
+            if (pos != std::string::npos) 
+            {
                 std::string headerName = line.substr(0, pos);
                 std::string headerValue = line.substr(pos + 1);
                 // Trim leading/trailing spaces
@@ -79,7 +84,9 @@ Request build_request(char* request_buffer) {
         request.body.erase(request.body.find_last_not_of("\r\n") + 1);
 
         return request;
-    } catch (const exception& error) { 
+    } 
+    catch (const exception& error) 
+    { 
         Request request; 
         request.method = "invalid";
         return request; 
@@ -87,20 +94,23 @@ Request build_request(char* request_buffer) {
 }
 
 
-std::ostream& operator<<(std::ostream& out, const Request& request) { 
+std::ostream& operator<<(std::ostream& out, const Request& request) 
+{ 
     //For request logging 
     out << "Method: " << request.method << '\n';
     out << "Route: " << request.route << '\n'; 
     out << "Version: " << request.version << '\n';
     out << "Body: " << request.body << '\n';
-    for (const auto& pair: request.headers) { 
+    for (const auto& pair: request.headers)  
         out << pair.first << ": " << pair.second << "\n"; 
-    }
+    
     return out; 
 }
 
-std::string get_status_message(int status_code) {
-    switch (status_code) {
+std::string get_status_message(int status_code) 
+{
+    switch (status_code) 
+    {
         case 100: return "Continue";
         case 200: return "OK"; 
         case 201: return "Created";
@@ -150,7 +160,8 @@ std::string get_status_message(int status_code) {
     }
 }
 
-Response::Response() { 
+Response::Response() 
+{ 
     //Sets default response members and hetters
     version = "HTTP/1.1";
     status = 200; 
@@ -158,15 +169,16 @@ Response::Response() {
     headers["Connection"] = "close";
 }
 
-string build_response(Response& response) { 
+string build_response(Response& response) 
+{ 
     /* Returns a string of a response object complient with HTTP */
     response.headers["Content-Length"] = to_string(response.body.size());
 
     string message = get_status_message(response.status);
     string headers; 
-    for (const auto& pair: response.headers) { 
+    for (const auto& pair: response.headers)  
         headers += pair.first + ": " + pair.second + "\r\n";
-    }
+
     headers += "\r\n";
     
     string response_str =
@@ -176,20 +188,22 @@ string build_response(Response& response) {
     return response_str; 
 }
 
-bool is_valid_request(const Request& request) { 
+bool is_valid_request(const Request& request) 
+{ 
     /* Check each of the members to see if not empty and is valid http*/
 
     array<string, 7> methods{"GET", "POST", "HEAD", "PUT", "DELETE", "OPTIONS", "TRACE"};
     bool has_valid_method = false; 
-    for (const string& method : methods) { 
-        if (request.method == method) { 
+    for (const string& method : methods) 
+    { 
+        if (request.method == method) 
+        { 
             has_valid_method = true; 
             break; 
         }
     }
-    if (!has_valid_method) { 
+    if (!has_valid_method)  
         return false; 
-    }
 
     array<string, 16> forbidden_route_chars = {
         "%00",   // Null byte
@@ -210,20 +224,21 @@ bool is_valid_request(const Request& request) {
         "~"     
     };
 
-    for (const string& chars : forbidden_route_chars) { 
-        if (request.route.find(chars) != string::npos) { 
+    for (const string& chars : forbidden_route_chars) 
+    { 
+        if (request.route.find(chars) != string::npos) 
             return false; 
-        }
     }
 
-    if (request.version != "HTTP/1.0" && request.version != "HTTP/1.1") { 
+    if (request.version != "HTTP/1.0" && request.version != "HTTP/1.1")  
         return false; 
-    }
+    
     return true; 
 }
 
 
-Response default_404_response() { 
+Response default_404_response() 
+{ 
     Response response; 
     response.status = 404; 
     response.body = "<html><body><h1>404 Not Found</h1></body></html>\r\n";
@@ -231,7 +246,8 @@ Response default_404_response() {
 }
 
 
-Response default_400_response() { 
+Response default_400_response() 
+{ 
     Response response; 
     response.status = 400;
     response.body = "<html><body><h1>400 Bad Request</h1><p>Your request is invalid.</p></body></html>\r\n";

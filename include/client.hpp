@@ -13,8 +13,10 @@
    The socket_fd will then be used to serve content 
 */
 
-namespace uoserve { 
-    class Client { 
+namespace uoserve 
+{ 
+    class Client 
+    { 
     public: 
         Client(); 
         Client(Client&&) noexcept;
